@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Index - iLanding Bootstrap Template</title>
+    <title>MininCode | Профиль организации</title>
     <meta name="description" content="" />
     <meta name="keywords" content="" />
 
@@ -57,10 +57,6 @@
         <nav id="navmenu" class="navmenu">
           <ul>
             <li><a href="./index.html#hero">Главная</a></li>
-            <li><a href="./index.html#about">О нас</a></li>
-            <li><a href="./index.html#features">Карта организаций</a></li>
-            <li><a href="./index.html#services">Ближайшие мероприятия</a></li>
-            <li><a href="./index.html#contact">Контакты</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -78,9 +74,8 @@
         class="contact section light-background"
         style="margin-top: 50px"
       >
-        <div
-          class="container d-flex align-items-stretch justify-content-center min-vh-100"
-        >
+      <div class="container justify-content-center min-vh-100">
+
           <div class="row justify-content-center w-100">
             <!-- User Profile Card -->
             <div class="col-lg-5">
@@ -172,8 +167,8 @@
                     "
                   >
                     <h3>Мероприятия</h3>
+                    <a href="./addEvent.html">
                     <button
-                      id="addEventButton"
                       class="btn btn-primary"
                       style="
                         display: flex;
@@ -192,14 +187,12 @@
                       ></i>
                       Добавить мероприятие
                     </button>
+                </a>
                   </div>
                   <hr />
                 </div>
               </div>
             </div>
-
-            <!-- Events Section -->
-            <div class="col-lg-7" id=""></div>
           </div>
         </div>
       </section>
@@ -218,90 +211,12 @@
       ><i class="bi bi-arrow-up-short"></i
     ></a>
 
-    <!-- Модальное окно -->
-    <div
-      class="modal fade"
-      id="addEventModal"
-      tabindex="-1"
-      aria-labelledby="addEventModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addEventModalLabel">
-              Добавить мероприятие
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="eventName" class="form-label"
-                  >Название мероприятия</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="eventName"
-                  placeholder="Введите название мероприятия"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="eventDate" class="form-label"
-                  >Дата мероприятия</label
-                >
-                <input type="date" class="form-control" id="eventDate" />
-              </div>
-              <div class="mb-3">
-                <label for="eventDescription" class="form-label"
-                  >Описание</label
-                >
-                <textarea
-                  class="form-control"
-                  id="eventDescription"
-                  rows="3"
-                  placeholder="Введите описание мероприятия"
-                ></textarea>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Закрыть
-            </button>
-            <button type="button" class="btn btn-primary">
-              Сохранить изменения
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Vendor JS Files -->
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/aos/aos.js"></script>
     <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-    <script>
-        // Когда пользователь нажимает на кнопку "Добавить мероприятие"
-        document.getElementById('addEventButton').addEventListener('click', function () {
-          // Открыть модальное окно
-          var myModal = new bootstrap.Modal(document.getElementById('addEventModal'));
-          myModal.show();
-        });
-      </script>
-      
 
     <!-- Main JS File -->
     <script src="assets/js/profileOrg.js"></script>
