@@ -39,8 +39,8 @@ async function login() {
             document.getElementById('login').value = '';
             document.getElementById('password').value = '';
 
-            // Можно, например, перенаправить пользователя на защищенную страницу
-            // window.location.href = '/dashboard'; // Пример перенаправления
+            // Перенаправляем пользователя на страницу профиля
+            window.location.href = '/profile.html'; // Перенаправление на страницу профиля
         } else {
             // Ошибка (неверный логин или пароль)
             errorMessage.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
@@ -51,6 +51,7 @@ async function login() {
         errorMessage.innerHTML = '<div class="alert alert-danger">An error occurred. Please try again later.</div>';
     }
 }
+
 
 
 async function reg() {

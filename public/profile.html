@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Регистрация</title>
+    <title>Index - iLanding Bootstrap Template</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
 
@@ -31,6 +31,7 @@
 </head>
 
 <body class="index-page">
+
     <header id="header" class="header d-flex align-items-center fixed-top">
         <div
             class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
@@ -50,55 +51,54 @@
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
 
-            <a class="btn-getstarted" href="./login.html"><b>Войти</b></a>
+            <a class="btn-getstarted" href="./profile.html"><b>Профиль</b></a>
 
         </div>
     </header>
 
     <main class="main">
         <!-- Contact Section -->
-        <section id="contact" class="contact section light-background">
-            <div class="container d-flex align-items-center justify-content-center min-vh-100">
+        <section id="contact" class="contact section light-background" style="margin-top: 50px;">
+            <div class="container d-flex align-items-stretch justify-content-center min-vh-100">
                 <div class="row justify-content-center w-100">
-                    <div class="col-lg-7">
-                        <div class="contact-form" data-aos="fade-up" data-aos-delay="300">
-                            <h3>Создать аккаунт</h3>
+                    <!-- User Profile Card -->
+                    <div class="col-lg-5">
+                        <div class="contact-form" data-aos="fade-up" data-aos-delay="300" style="height: 450px;">
                             <div class="row gy-4">
-                                <div class="col-md-12">
-                                    <input type="text" id="login" name="name" class="form-control" placeholder="Логин" required="">
-                                </div>
-                                <div class="col-md-12">
-                                    <input type="text" id="fio" name="name" class="form-control" placeholder="ФИО" required="">
-                                </div>
-                                <div class="col-12">
-                                    <input type="password" id="password" class="form-control" name="subject" placeholder="Пароль" required="">
-                                </div>
-                                <div class="col-12">
-                                    <input type="password" id="password_repeat" class="form-control" name="subject" placeholder="Пароль ещё раз" required="">
-                                </div>
-                                <div class="col-12 text-center">
-                                    <div class="error-message"></div>
-                                    <button type="button" onclick="reg()" class="btn">Создать аккаунт</button>
-                                </div>
+                                <h3>Профиль</h3>
+                                <hr>
+                                <h4 id="login">Логин: </h4>
+                                <h4 id="name">Имя: </h4>
+                                <h4 id="role">Роль: </h4>
+                                <h4 id="contact-info">Контактная информация: </h4>
                             </div>
-                            <!-- Кнопка "Создать аккаунт", центрированная внутри -->
-                            <div class="col-12 text-center mt-3">
-                                <a href="./login.html" class="btn">Войти</a>
+                        </div>
+                    </div>
+        
+                    <!-- Events Section -->
+                    <div class="col-lg-7">
+                        <div id="eventContainer" class="contact-form" data-aos="fade-up" data-aos-delay="300" style="height: 450px; margin-bottom: 20px;">
+                            <div class="row gy-4">
+                                <h3>Название мероприятия</h3>
+                                <h4>Описание: </h4>
+                                <h4>Организатор: </h4>
+                                <h4>Дата проведения: </h4>
+                                <h4>Место: </h4>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section><!-- /Contact Section -->
+        
     </main>
-    
+
     <footer id="footer" class="footer">
         <!-- Footer content here -->
     </footer>
 
     <!-- Scroll Top -->
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
-            class="bi bi-arrow-up-short"></i></a>
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -108,8 +108,8 @@
     <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
 
     <!-- Main JS File -->
+    <script src="assets/js/profile.js"></script>
     <script src="assets/js/main.js"></script>
-    <script src="assets/js/logreg.js"></script>
 
 </body>
 

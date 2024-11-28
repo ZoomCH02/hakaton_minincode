@@ -134,6 +134,77 @@ app.get('/api/protected', (req, res) => {
     res.json({ message: 'This is a protected route', user: req.session.user });
 });
 
+// Маршрут для получения информации о текущем пользователе
+app.get('/api/user', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    // Получаем данные о пользователе из сессии
+    const user = req.session.user;
+
+    // Запрашиваем информацию о пользователе из базы данных (например, имя и контактные данные)
+    const query = 'SELECT * FROM users WHERE id = ?';
+    
+    db.get(query, [user.id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error fetching user information' });
+        }
+        
+        if (!row) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Отправляем информацию о пользователе
+        res.json({
+            id: row.id,
+            login: row.login,
+            name: row.name,
+            role: row.role,
+            contact_info: row.contact_info,  // Допустим, у пользователя есть поле с контактной информацией
+        });
+    });
+});
+
+
+// Маршрут для получения всех организаций
+app.get('/api/organizations', (req, res) => {
+    // SQL-запрос для получения всех организаций
+    const query = 'SELECT * FROM organizations';
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        // Если организации найдены, возвращаем их в формате JSON
+        res.json({ organizations: rows });
+    });
+});
+
+// Маршрут для получения организации по ID
+app.get('/api/organizations/:id', (req, res) => {
+    const { id } = req.params;  // Получаем ID из параметров URL
+
+    // SQL-запрос для получения организации по ID
+    const query = 'SELECT * FROM organizations WHERE id = ?';
+
+    db.get(query, [id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        // Если организация не найдена
+        if (!row) {
+            return res.status(404).json({ message: 'Organization not found22' });
+        }
+
+        // Возвращаем организацию в формате JSON
+        res.json({ organization: row });
+    });
+});
+
+
 // Указываем порт, на котором будет работать сервер
 const PORT = process.env.PORT || 3000;
 
