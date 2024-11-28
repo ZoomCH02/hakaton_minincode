@@ -3,6 +3,8 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');  // Подключаем body-parser
 const sqlite3 = require('sqlite3').verbose();  // Подключаем sqlite3
+const session = require('express-session'); // Подключаем express-session
+const bcrypt = require('bcrypt'); // Подключаем bcrypt для хэширования паролей
 
 // Создаем приложение express
 const app = express();
@@ -14,6 +16,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Настройка сессий
+app.use(session({
+    secret: 'ASdsgrgsdt4wsgfgDFgRsdfDSFsefgdhrYhfh', // Секретный ключ для шифрования сессии
+    resave: false, // Не сохранять сессию, если она не изменялась
+    saveUninitialized: true, // Сохранять сессию, даже если она пустая
+    cookie: {
+        httpOnly: true, // Защита от доступа к cookie через JavaScript
+        secure: false, // Установите в true, если используете HTTPS
+    }
+}));
+
 // Создаем или открываем базу данных SQLite
 const db = new sqlite3.Database('./db.db', (err) => {
     if (err) {
@@ -23,141 +36,102 @@ const db = new sqlite3.Database('./db.db', (err) => {
     }
 });
 
-// Получить всех пользователей
-app.get('/api/users', (req, res) => {
-    const query = 'SELECT * FROM users'; // SQL-запрос для получения всех пользователей
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(rows); // Отправляем данные в формате JSON
-    });
+// Маршрут для регистрации
+app.post('/api/register', async (req, res) => {
+    const { login, fio, password, password_repeat } = req.body;
+
+    if (!login || !fio || !password || !password_repeat) {
+        return res.status(400).json({ message: 'Все поля обязательны для заполнения' });
+    }
+
+    if (password !== password_repeat) {
+        return res.status(400).json({ message: 'Пароли не совпадают' });
+    }
+
+    try {
+        // Проверим, существует ли пользователь с таким логином
+        const checkQuery = 'SELECT * FROM users WHERE login = ?';
+        db.get(checkQuery, [login], async (err, row) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            if (row) {
+                return res.status(400).json({ message: 'Пользователь с таким логином уже существует' });
+            }
+
+            // Хэшируем пароль
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Сохраняем нового пользователя в базу данных
+            const insertQuery = 'INSERT INTO users (login, password, name, role) VALUES (?, ?, ?, ?)';
+            db.run(insertQuery, [login, hashedPassword, fio, "student"], function (err) {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+
+                res.status(201).json({ message: 'Пользователь успешно зарегистрирован' });
+            });
+        });
+    } catch (error) {
+        console.error('Error during registration:', error);
+        res.status(500).json({ message: 'Произошла ошибка при регистрации' });
+    }
 });
 
-// Получить пользователя по ID
-app.get('/api/users/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'SELECT * FROM users WHERE id = ?';
-    db.get(query, [id], (err, row) => {
+// Маршрут для входа
+app.post('/api/login', (req, res) => {
+    const { login, password } = req.body;
+
+    // Проверка на наличие логина и пароля в запросе
+    if (!login || !password) {
+        return res.status(400).json({ message: 'Login and password are required' });
+    }
+
+    // SQL-запрос для поиска пользователя по логину
+    const query = 'SELECT * FROM users WHERE login = ?';
+
+    db.get(query, [login], async (err, row) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
+
+        // Если пользователь с таким логином не найден
         if (!row) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(401).json({ message: 'Invalid login or password' });
         }
-        res.json(row);
-    });
-});
 
-// Получить все организации
-app.get('/api/organizations', (req, res) => {
-    const query = 'SELECT * FROM organizations'; // SQL-запрос для получения всех организаций
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(rows); // Отправляем данные в формате JSON
-    });
-});
+        try {
+            // Проверяем правильность пароля, сравнив хэшированный пароль с введенным
+            const match = await bcrypt.compare(password, row.password);
 
+            if (!match) {
+                return res.status(401).json({ message: 'Invalid login or password' });
+            }
 
-// Получить организацию по ID
-app.get('/api/organizations/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'SELECT * FROM organizations WHERE id = ?';
-    db.get(query, [id], (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
+            // Сохраняем данные пользователя в сессии
+            req.session.user = {
+                id: row.id,
+                login: row.login
+            };
+
+            res.json({ message: 'Login successful', user: req.session.user });
+
+        } catch (err) {
+            // Если произошла ошибка при сравнении паролей
+            return res.status(500).json({ error: 'Error during password comparison' });
         }
-        if (!row) {
-            return res.status(404).json({ message: 'Organization not found' });
-        }
-        res.json(row);
     });
 });
 
 
-// Получить все мероприятия
-app.get('/api/events', (req, res) => {
-    const query = 'SELECT * FROM events'; // SQL-запрос для получения всех мероприятий
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(rows); // Отправляем данные в формате JSON
-    });
-});
+// Пример защищенного маршрута, доступного только после входа
+app.get('/api/protected', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
 
-
-// Получить мероприятие по ID
-app.get('/api/events/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'SELECT * FROM events WHERE id = ?';
-    db.get(query, [id], (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (!row) {
-            return res.status(404).json({ message: 'Event not found' });
-        }
-        res.json(row);
-    });
-});
-
-
-// Получить все кружки
-app.get('/api/clubs', (req, res) => {
-    const query = 'SELECT * FROM clubs'; // SQL-запрос для получения всех кружков
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(rows); // Отправляем данные в формате JSON
-    });
-});
-
-
-// Получить кружок по ID
-app.get('/api/clubs/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'SELECT * FROM clubs WHERE id = ?';
-    db.get(query, [id], (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (!row) {
-            return res.status(404).json({ message: 'Club not found' });
-        }
-        res.json(row);
-    });
-});
-
-
-// Получить все новости
-app.get('/api/news', (req, res) => {
-    const query = 'SELECT * FROM news'; // SQL-запрос для получения всех новостей
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(rows); // Отправляем данные в формате JSON
-    });
-});
-
-
-// Получить новость по ID
-app.get('/api/news/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'SELECT * FROM news WHERE id = ?';
-    db.get(query, [id], (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (!row) {
-            return res.status(404).json({ message: 'News not found' });
-        }
-        res.json(row);
-    });
+    res.json({ message: 'This is a protected route', user: req.session.user });
 });
 
 // Указываем порт, на котором будет работать сервер
