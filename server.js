@@ -147,6 +147,20 @@ app.get("/api/protected", (req, res) => {
   res.json({ message: "This is a protected route", user: req.session.user });
 });
 
+app.get("/users-with-telegram", (req, res) => {
+  const query = `SELECT login, name, telegram FROM users WHERE telegram IS NOT NULL AND telegram != ''`;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error("Error fetching users:", err);
+      res.status(500).json({ error: "Database query failed" });
+      return;
+    }
+
+    res.status(200).json(rows);
+  });
+});
+
 // Маршрут для получения информации о текущем пользователе
 app.get("/api/user", (req, res) => {
   if (!req.session.user) {
@@ -400,6 +414,24 @@ app.get("/api/organizations", (req, res) => {
 
     // Возвращаем все организации в формате JSON
     res.json({ organizations: rows });
+  });
+});
+
+// Маршрут для получения новостей организации
+app.get("/api/organizations/:id/news", (req, res) => {
+  const organizationId = req.params.id;
+
+  // SQL-запрос для получения новостей конкретной организации
+  const query =
+    "SELECT * FROM news WHERE organization_id = ? ORDER BY created_at DESC";
+
+  db.all(query, [organizationId], (err, rows) => {
+    if (err) {
+      console.error("Ошибка при получении новостей:", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json({ news: rows });
   });
 });
 

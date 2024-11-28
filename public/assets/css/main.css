@@ -2163,19 +2163,34 @@ section,
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.05);
 }
 
+.contact-form-org {
+  background-color: var(--surface-color);
+  padding: 3rem;
+  border-radius: 1rem;
+  height: 100%;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.05);
+  width: 1280px;
+}
+
+@media (max-width: 992px) {
+  .contact-form-org {
+    width: 380px;
+  }
+}
+
 @media (max-width: 992px) {
   .contact .contact-form {
     padding: 1.5rem;
   }
 }
 
-.contact .contact-form h3 {
+.contact .contact-form .contact-form-org h3 {
   font-size: 2rem;
   margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {
-  .contact .contact-form h3 {
+  .contact .contact-form .contact-form-org h3 {
     font-size: 1.75rem;
   }
 }
@@ -2185,8 +2200,8 @@ section,
   margin-bottom: 2rem;
 }
 
-.contact .contact-form .form-control,
-.contact .contact-form .form-select {
+.contact .contact-form .contact-form-org .form-control,
+.contact .contact-form .contact-form-org .form-select {
   padding: 0.875rem 1.25rem;
   border-color: color-mix(in srgb, var(--default-color), transparent 90%);
   border-radius: 0.5rem;
@@ -2375,4 +2390,24 @@ section,
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 40px;
+}
+
+
+.card-org {
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 10px 0;
+  background-color: #fff;
+}
+
+.card-org h2 {
+  font-size: 20px;
+  color: #333;
+}
+
+.card-org p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
 }
