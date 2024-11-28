@@ -160,10 +160,6 @@ app.get('/api/news/:id', (req, res) => {
     });
 });
 
-
-
-
-
 // Указываем порт, на котором будет работать сервер
 const PORT = process.env.PORT || 3000;
 
