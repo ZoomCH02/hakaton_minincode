@@ -215,25 +215,42 @@ app.get('/api/latest-events', (req, res) => {
     });
 });
 
-// Маршрут для получения мероприятия по ID
 app.get('/api/events', (req, res) => {
-    // Здесь ваш запрос к базе данных для получения информации о мероприятии
-    const query = `
-    SELECT * FROM events`;
+    let { search, organization_id } = req.query;
+    let query = 'SELECT * FROM events WHERE 1=1';
+    const params = [];
 
-    db.all(query, [], (err, rows) => {
+    // Фильтрация по названию мероприятия
+    if (search) {
+        query += ' AND title LIKE ?';
+        params.push(`%${search}%`);
+    }
+
+    // Фильтрация по организации
+    if (organization_id) {
+        query += ' AND organization_id = ?';
+        params.push(organization_id);
+    }
+
+    query += ' ORDER BY event_date ASC'; // Сортируем по дате мероприятия
+
+    console.log('Формируем запрос:', query);
+    console.log('Параметры запроса:', params);
+
+    db.all(query, params, (err, rows) => {
         if (err) {
+            console.error('Ошибка при выполнении запроса:', err.message);
             return res.status(500).json({ error: err.message });
         }
 
-        // Если мероприятия найдены, возвращаем их в формате JSON
-        if (rows.length > 0) {
-            res.json({ events: rows });
-        } else {
-            res.json({ message: 'Нет ближайших мероприятий.' });
-        }
+        // Логируем результат запроса
+        console.log('Результат запроса:', rows);
+
+        res.json({ events: rows });
     });
 });
+
+
 
 // Маршрут для получения мероприятия по ID
 app.get('/api/events/:id', (req, res) => {

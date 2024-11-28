@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Вход</title>
+    <title>MininCode | Мероприятия</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
 
@@ -62,6 +62,17 @@
             <div class="container section-title" data-aos="fade-up">
                 <h2></h2>
             </div><!-- End Section Title -->
+
+            <!-- Форма для фильтрации -->
+            <div class="filters  justify-content-between mb-4">
+                <!-- Поиск по названию -->
+                <input type="text" id="searchInput" class="form-control" placeholder="Поиск по названию..." />
+                <!-- Фильтр по организации -->
+                <select id="organizationFilter" class="form-control">
+                    <option value="">Все организации</option>
+                    <!-- Опции для организаций будут добавляться динамически -->
+                </select>
+            </div>
 
             <div class="container" data-aos="fade-up" data-aos-delay="100">
                 <div class="row g-4" id="eventsList">
