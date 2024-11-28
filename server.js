@@ -590,6 +590,256 @@ app.delete("/api/deleteEvent/:id", (req, res) => {
   });
 });
 
+app.get("/api/admin/getStudents", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "auth plz" });
+  }
+
+  if (req.session.user.role != "admin") {
+    return res.status(401).json({ message: "Не достаточно привелегий" });
+  }
+
+  db.all("SELECT * FROM users WHERE role='student'", (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.send(row);
+  });
+});
+
+app.get("/api/admin/getModerators", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "auth plz" });
+  }
+
+  if (req.session.user.role != "admin") {
+    return res.status(401).json({ message: "Не достаточно привелегий" });
+  }
+
+  db.all("SELECT * FROM users WHERE role='moderator'", (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.send(row);
+  });
+});
+
+app.get("/api/admin/deliteModerator", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "auth plz" });
+  }
+
+  if (req.session.user.role != "admin") {
+    return res.status(401).json({ message: "Не достаточно привелегий" });
+  }
+
+  db.run(
+    "UPDATE users set role='student' WHERE id=?",
+    [req.query.id],
+    (err) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.send({ status: "OK" });
+    }
+  );
+});
+
+app.get("/api/admin/addModerator", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "auth plz" });
+  }
+
+  if (req.session.user.role != "admin") {
+    return res.status(401).json({ message: "Не достаточно привелегий" });
+  }
+
+  db.run(
+    "UPDATE users set role='moderator' WHERE id=?",
+    [req.query.id],
+    (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.send({ status: "OK" });
+    }
+  );
+});
+
+app.post("/api/admin/createOrg", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "auth plz" });
+  }
+
+  var d = req.body;
+  d.name, d.description, d.category, d.latetude, d.longetude, d.img;
+  db.run(
+    "INSERT INTO organizations (name,description,category,latetude,longetude,img,verified) VALUES (?,?,?,?,?,?,0)",
+    [d.name, d.description, d.category, d.latetude, d.longetude, d.img],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      db.run(
+        "INSERT INTO userOnOrg (uid,orgid) VALUES (?,?)",
+        [req.session.user.id, this.lastID],
+        function (err) {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          } else {
+            res.send({ status: "OK" });
+          }
+        }
+      );
+    }
+  );
+});
+
+app.get("/api/admin/getOrgForModeration", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "auth plz" });
+  }
+
+  if (
+    req.session.user.role != "admin" &&
+    req.session.user.role != "moderator"
+  ) {
+    return res.status(401).json({ message: "Не достаточно привелегий" });
+  }
+
+  db.all("SELECT * FROM organizations WHERE verified=0", (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.send(row);
+  });
+});
+
+app.get("/api/admin/getOrgVerefy", (req, res) => {
+  db.all("SELECT * FROM organizations WHERE verified=1", (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.send(row);
+  });
+});
+
+app.post("/api/admin/updateOrg", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "auth plz" });
+  }
+
+  if (
+    req.session.user.role != "admin" &&
+    req.session.user.role != "moderator"
+  ) {
+    return res.status(401).json({ message: "Не достаточно привелегий" });
+  }
+
+  var b = req.body;
+
+  if (b.col == "verified") {
+    if (b.val == 1) {
+      db.run(
+        `
+           UPDATE users 
+            SET role = 'organization' 
+            WHERE id IN (SELECT uid FROM userOnOrg WHERE userOnOrg.orgid = ?)
+           `,
+        [b.id],
+        (err) => {
+          if (err) {
+            console.log(err);
+          }
+        }
+      );
+    } else {
+      db.run(
+        `
+       UPDATE users 
+        SET role = 'student' 
+        WHERE id IN (SELECT uid FROM userOnOrg WHERE userOnOrg.orgid = ?)
+       `,
+        [b.id],
+        (err) => {
+          if (err) {
+            console.log(err);
+          }
+        }
+      );
+    }
+  }
+
+  db.run(
+    "UPDATE organizations SET " + b.col + "=? WHERE id=?",
+    [b.val, b.id],
+    (err) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      } else {
+        res.send({ status: "OK" });
+      }
+    }
+  );
+});
+
+app.get("/api/admin/getStatistic", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "auth plz" });
+  }
+
+  if (
+    req.session.user.role != "admin" &&
+    req.session.user.role != "moderator"
+  ) {
+    return res.status(401).json({ message: "Не достаточно привелегий" });
+  }
+
+  const rowOrg = await new Promise((resolve, reject) => {
+    db.all("SELECT created_at FROM organizations", [], (err, rows) => {
+      if (err) reject(err);
+      resolve(rows);
+    });
+  });
+
+  const evnts = await new Promise((resolve, reject) => {
+    db.all("SELECT event_date FROM events", [], (err, rows) => {
+      if (err) reject(err);
+      resolve(rows);
+    });
+  });
+
+  dayeOrg = {};
+  for (var el of rowOrg) {
+    var date = new Date(el.created_at);
+    var day = date.toLocaleDateString("ru-RU");
+    if (!dayeOrg[day]) {
+      dayeOrg[day] = 1;
+    } else {
+      dayeOrg[day] += 1;
+    }
+  }
+
+  dayeEvents = {};
+  for (var el of evnts) {
+    var date = new Date(el.event_date);
+    var day = date.toLocaleDateString("ru-RU");
+    if (!dayeEvents[day]) {
+      dayeEvents[day] = 1;
+    } else {
+      dayeEvents[day] += 1;
+    }
+  }
+
+  res.send({ dayeEvents: dayeEvents, dayeOrg: dayeOrg });
+});
+
 // Указываем порт, на котором будет работать сервер
 const PORT = process.env.PORT || 3000;
 

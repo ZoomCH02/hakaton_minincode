@@ -11,12 +11,12 @@ function init() {
     zoom: 10,
     controls: ["zoomControl", "typeSelector", "fullscreenControl"],
   });
-
+  //TODO EDIT PITER
   // Загрузка данных
-  fetch("/api/organizations")
+  fetch("/api/admin/getOrgVerefy")
     .then((response) => response.json())
     .then((data) => {
-      organizations = data.organizations;
+      organizations = data;
       renderPlacemarks(organizations); // Отрисовка всех меток
     })
     .catch((error) => console.error("Ошибка загрузки JSON:", error));
