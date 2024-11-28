@@ -61,7 +61,7 @@
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <a id="logOrProfBut" class="btn-getstarted" href="./profile.html"
+        <a id="logOrProfBut" class="btn-getstarted" href="./profileOrg.html"
           ><b>Профиль</b></a
         >
       </div>
@@ -74,8 +74,7 @@
         class="contact section light-background"
         style="margin-top: 50px"
       >
-      <div class="container justify-content-center min-vh-100">
-
+        <div class="container justify-content-center min-vh-100">
           <div class="row justify-content-center w-100">
             <!-- User Profile Card -->
             <div class="col-lg-5">
@@ -105,6 +104,8 @@
                     <h3>Новости</h3>
                     <button
                       class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#addNewsModal"
                       style="
                         display: flex;
                         align-items: center;
@@ -120,7 +121,7 @@
                         class="bi bi-plus-circle-fill"
                         style="margin-right: 8px; font-size: 20px"
                       ></i>
-                      Добавить новость
+                      Добавить
                     </button>
                   </div>
                   <hr />
@@ -137,6 +138,8 @@
                     <h3>Кружки</h3>
                     <button
                       class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#addCircleModal"
                       style="
                         display: flex;
                         align-items: center;
@@ -152,7 +155,7 @@
                         class="bi bi-plus-circle-fill"
                         style="margin-right: 8px; font-size: 20px"
                       ></i>
-                      Добавить кружки
+                      Добавить
                     </button>
                   </div>
                   <hr />
@@ -167,9 +170,10 @@
                     "
                   >
                     <h3>Мероприятия</h3>
-                    <a href="./addEvent.html">
                     <button
                       class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#addEventModal"
                       style="
                         display: flex;
                         align-items: center;
@@ -185,9 +189,8 @@
                         class="bi bi-plus-circle-fill"
                         style="margin-right: 8px; font-size: 20px"
                       ></i>
-                      Добавить мероприятие
+                      Добавить
                     </button>
-                </a>
                   </div>
                   <hr />
                 </div>
@@ -211,6 +214,189 @@
       ><i class="bi bi-arrow-up-short"></i
     ></a>
 
+    <!-- Modal: Add News -->
+    <div
+      class="modal fade"
+      id="addNewsModal"
+      tabindex="-1"
+      aria-labelledby="addNewsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addNewsModalLabel">Добавить новость</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="addNewsForm">
+              <div class="mb-3">
+                <label for="newsTitle" class="form-label">Заголовок</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="newsTitle"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="newsContent" class="form-label">Содержание</label>
+                <textarea
+                  class="form-control"
+                  id="newsContent"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add Circle -->
+    <div
+      class="modal fade"
+      id="addCircleModal"
+      tabindex="-1"
+      aria-labelledby="addCircleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addCircleModalLabel">
+              Добавить кружок
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="addCircleForm">
+              <div class="mb-3">
+                <label for="circleTitle" class="form-label">Название</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="circleTitle"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="circleDescription" class="form-label"
+                  >Описание</label
+                >
+                <textarea
+                  class="form-control"
+                  id="circleDescription"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="circleSched" class="form-label">Расписание</label>
+                <textarea
+                  class="form-control"
+                  id="circleSched"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add Event -->
+    <div
+      class="modal fade"
+      id="addEventModal"
+      tabindex="-1"
+      aria-labelledby="addEventModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addEventModalLabel">
+              Добавить мероприятие
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="addEventForm">
+              <div class="mb-3">
+                <label for="eventTitle" class="form-label">Название</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="eventTitle"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="eventDescription" class="form-label"
+                  >Описание</label
+                >
+                <textarea
+                  class="form-control"
+                  id="eventDescription"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="eventLocal" class="form-label">Локация</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="eventLocal"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="eventDate" class="form-label">Дата</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="eventDate"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="eventTime" class="form-label">Время</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="eventTime"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Vendor JS Files -->
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/aos/aos.js"></script>
@@ -221,5 +407,6 @@
     <!-- Main JS File -->
     <script src="assets/js/profileOrg.js"></script>
     <script src="assets/js/main.js"></script>
+
   </body>
 </html>

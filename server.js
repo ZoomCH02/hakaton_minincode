@@ -467,6 +467,129 @@ app.get("/api/organizations/:id/news", (req, res) => {
   });
 });
 
+app.post("/api/news", (req, res) => {
+  const { title, content, organization_id } = req.body;
+
+  if (!title || !content || !organization_id) {
+    return res.status(400).json({ message: "Title and content are required" });
+  }
+
+  const query = `INSERT INTO news (title, content, organization_id) VALUES (?, ?, ?)`;
+
+  db.run(query, [title, content, organization_id], function (err) {
+    if (err) {
+      console.error("Error adding news:", err.message);
+      return res.status(500).json({ error: "Failed to add news" });
+    }
+
+    res
+      .status(201)
+      .json({ message: "News added successfully", newsId: this.lastID });
+  });
+});
+
+app.post("/api/events_c", (req, res) => {
+  const { title, description, schedule, organization_id } = req.body;
+
+  if (!title || !description || !schedule || !organization_id) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  const query = `INSERT INTO events (title, description, event_date, isEvent, organization_id) VALUES (?, ?, ?, ?, ?)`;
+
+  db.run(
+    query,
+    [title, description, schedule, 0, organization_id],
+    function (err) {
+      if (err) {
+        console.error("Error adding circle:", err.message);
+        return res.status(500).json({ error: "Failed to add circle" });
+      }
+
+      res
+        .status(201)
+        .json({ message: "Circle added successfully", circleId: this.lastID });
+    }
+  );
+});
+
+app.post("/api/events_e", (req, res) => {
+  const { title, description, location, date, time, organization_id } =
+    req.body;
+
+  if (
+    !title ||
+    !description ||
+    !location ||
+    !date ||
+    !time ||
+    !organization_id
+  ) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  const query = `INSERT INTO events (title, description, location, event_date, isEvent, organization_id) VALUES (?, ?, ?, ?, ?, ?)`;
+
+  db.run(
+    query,
+    [title, description, location, date + " " + time, 1, organization_id],
+    function (err) {
+      if (err) {
+        console.error("Error adding event:", err.message);
+        return res.status(500).json({ error: "Failed to add event" });
+      }
+
+      res
+        .status(201)
+        .json({ message: "Event added successfully", eventId: this.lastID });
+    }
+  );
+});
+
+// Маршрут для удаления новости
+app.delete("/api/deleteNews/:id", (req, res) => {
+  const newsId = req.params.id; // Получаем ID новости из параметра маршрута
+
+  // SQL-запрос на удаление новости по ID
+  const query = "DELETE FROM news WHERE id = ?";
+
+  db.run(query, [newsId], function (err) {
+    if (err) {
+      console.error("Ошибка при удалении новости:", err.message);
+      return res.status(500).json({ error: "Ошибка при удалении новости" });
+    }
+
+    // Проверяем, сколько строк было затронуто
+    if (this.changes === 0) {
+      return res.status(404).json({ message: "Новость не найдена" });
+    }
+
+    res.json({ success: true, message: "Новость удалена" });
+  });
+});
+
+// Маршрут для удаления мер
+app.delete("/api/deleteEvent/:id", (req, res) => {
+  const newsId = req.params.id; // Получаем ID новости из параметра маршрута
+
+  // SQL-запрос на удаление новости по ID
+  const query = "DELETE FROM events WHERE id = ?";
+
+  db.run(query, [newsId], function (err) {
+    if (err) {
+      console.error("Ошибка при удалении новости:", err.message);
+      return res.status(500).json({ error: "Ошибка при удалении новости" });
+    }
+
+    // Проверяем, сколько строк было затронуто
+    if (this.changes === 0) {
+      return res.status(404).json({ message: "Новость не найдена" });
+    }
+
+    res.json({ success: true, message: "Новость удалена" });
+  });
+});
+
 // Указываем порт, на котором будет работать сервер
 const PORT = process.env.PORT || 3000;
 
