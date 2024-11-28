@@ -56,10 +56,11 @@ async function fetchUserEvents() {
                 result.events.forEach(event => {
                     // Форматируем дату
                     const formattedDate = formatDate(event.event_date);
-
-                    eventsContainer.innerHTML += `
+                    
+                    if(event.isEvent==1){
+                        eventsContainer.innerHTML += `
                         <div class="contact-form" data-aos="fade-up" data-aos-delay="300"
-                            style="height: 450px; margin-bottom: 20px;">
+                            style="height: auto; margin-bottom: 20px;">
                             <div class="row gy-4">
                                 <h3><b>${event.title}</b></h3>
                                 <h4><b>Описание:</b> ${event.description}</h4>
@@ -69,6 +70,21 @@ async function fetchUserEvents() {
                             </div>
                         </div>
                     `;
+                    }
+                    else if(event.isEvent==0){ 
+                        eventsContainer.innerHTML += `
+                        <div class="contact-form" data-aos="fade-up" data-aos-delay="300"
+                            style="height: auto; margin-bottom: 20px;">
+                            <div class="row gy-4">
+                                <h3><b>${event.title}</b></h3>
+                                <h4><b>Описание:</b> ${event.description}</h4>
+                                <h4><b>Организатор:</b> ${event.name || "Не указано"}</h4>
+                                <h4><b>Расписание:</b> ${event.event_date}</h4>
+                                <h4><b>Место:</b> ${event.address}</h4>
+                            </div>
+                        </div>`
+                    }
+                 
                 });
             } else {
                 eventsContainer.innerHTML = '<p>Вы не записаны на мероприятия.</p>';
