@@ -37,6 +37,9 @@
 
     <!-- Main CSS File -->
     <link href="assets/css/main.css" rel="stylesheet" />
+    <style>
+      /* Вставьте сюда ваши стили для модального окна */
+    </style>
   </head>
 
   <body class="index-page">
@@ -126,63 +129,71 @@
                     </button>
                   </div>
                   <hr />
-                  <div class="card-org">
-                    <div
-                      style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                      "
-                    >
-                      <h2 style="margin: 0">Название новости</h2>
-                      <i
-                        class="bi bi-trash3-fill"
-                        style="color: red; font-size: 24px; cursor: pointer"
-                        title="Удалить новость"
-                      ></i>
-                    </div>
-                    <p style="margin-top: 10px; color: #555; font-size: 16px">
-                      Здесь размещается текст новости. Текст должен быть
-                      лаконичным и содержать основную информацию.
-                    </p>
-                  </div>
-                  <div class="card-org">
-                    <div
-                      style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                      "
-                    >
-                      <h2 style="margin: 0">Название новости</h2>
-                      <i
-                        class="bi bi-trash3-fill"
-                        style="color: red; font-size: 24px; cursor: pointer"
-                        title="Удалить новость"
-                      ></i>
-                    </div>
-                    <p style="margin-top: 10px; color: #555; font-size: 16px">
-                      Здесь размещается текст новости. Текст должен быть
-                      лаконичным и содержать основную информацию.
-                    </p>
-                  </div>
                 </div>
 
-                <div id="event" class="row gy-4" style="margin-top: 100px">
-                  <h3>Мероприятия</h3>
-                  <hr />
-                  <h4 id="login">Логин:</h4>
-                  <h4 id="name">Имя:</h4>
-                  <h4 id="role">Роль:</h4>
-                  <h4 id="contact-info">Контактная информация:</h4>
-                </div>
                 <div id="circles" class="row gy-4" style="margin-top: 100px">
-                  <h3>Кружки</h3>
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                    "
+                  >
+                    <h3>Кружки</h3>
+                    <button
+                      class="btn btn-primary"
+                      style="
+                        display: flex;
+                        align-items: center;
+                        background-color: #007bff;
+                        border: none;
+                        border-radius: 10px;
+                        padding: 10px 15px;
+                        font-size: 16px;
+                        cursor: pointer;
+                      "
+                    >
+                      <i
+                        class="bi bi-plus-circle-fill"
+                        style="margin-right: 8px; font-size: 20px"
+                      ></i>
+                      Добавить кружки
+                    </button>
+                  </div>
                   <hr />
-                  <h4 id="login">Логин:</h4>
-                  <h4 id="name">Имя:</h4>
-                  <h4 id="role">Роль:</h4>
-                  <h4 id="contact-info">Контактная информация:</h4>
+                </div>
+
+                <div id="events" class="row gy-4" style="margin-top: 100px">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                    "
+                  >
+                    <h3>Мероприятия</h3>
+                    <button
+                      id="addEventButton"
+                      class="btn btn-primary"
+                      style="
+                        display: flex;
+                        align-items: center;
+                        background-color: #007bff;
+                        border: none;
+                        border-radius: 10px;
+                        padding: 10px 15px;
+                        font-size: 16px;
+                        cursor: pointer;
+                      "
+                    >
+                      <i
+                        class="bi bi-plus-circle-fill"
+                        style="margin-right: 8px; font-size: 20px"
+                      ></i>
+                      Добавить мероприятие
+                    </button>
+                  </div>
+                  <hr />
                 </div>
               </div>
             </div>
@@ -207,12 +218,90 @@
       ><i class="bi bi-arrow-up-short"></i
     ></a>
 
+    <!-- Модальное окно -->
+    <div
+      class="modal fade"
+      id="addEventModal"
+      tabindex="-1"
+      aria-labelledby="addEventModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addEventModalLabel">
+              Добавить мероприятие
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="eventName" class="form-label"
+                  >Название мероприятия</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="eventName"
+                  placeholder="Введите название мероприятия"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="eventDate" class="form-label"
+                  >Дата мероприятия</label
+                >
+                <input type="date" class="form-control" id="eventDate" />
+              </div>
+              <div class="mb-3">
+                <label for="eventDescription" class="form-label"
+                  >Описание</label
+                >
+                <textarea
+                  class="form-control"
+                  id="eventDescription"
+                  rows="3"
+                  placeholder="Введите описание мероприятия"
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Закрыть
+            </button>
+            <button type="button" class="btn btn-primary">
+              Сохранить изменения
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Vendor JS Files -->
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/aos/aos.js"></script>
     <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+    <script>
+        // Когда пользователь нажимает на кнопку "Добавить мероприятие"
+        document.getElementById('addEventButton').addEventListener('click', function () {
+          // Открыть модальное окно
+          var myModal = new bootstrap.Modal(document.getElementById('addEventModal'));
+          myModal.show();
+        });
+      </script>
+      
 
     <!-- Main JS File -->
     <script src="assets/js/profileOrg.js"></script>

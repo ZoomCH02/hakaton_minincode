@@ -42,8 +42,8 @@ function renderPlacemarks(data) {
       [parseFloat(item.latetude), parseFloat(item.longetude)],
       {
         balloonContentHeader: item.name,
-        balloonContentBody: `<p>${item.description}</p><p>${item.address}</p>`,
-        balloonContentFooter: `<img src="${item.img}" alt="${item.name}" width="150">`,
+        balloonContentBody: `<p>${item.description}</p><p>${item.address}</p><br><img src="${item.img}" alt="${item.name}" width="150">`,
+        balloonContentFooter: `<a id="modalLink" href="../../organization.html?orgid=${item.id}" class="btn btn-primary">Перейти на страницу организации</a>`,
       },
       {
         preset: "islands#dotIcon",

@@ -126,6 +126,7 @@ app.post("/api/login", (req, res) => {
       req.session.user = {
         id: row.id,
         login: row.login,
+        role: row.role,
       };
 
       res.json({ message: "Login successful", user: req.session.user });
@@ -414,6 +415,37 @@ app.get("/api/organizations", (req, res) => {
 
     // Возвращаем все организации в формате JSON
     res.json({ organizations: rows });
+  });
+});
+
+// Маршрут для получения ID организации текущего пользователя
+app.get("/api/user/organization", (req, res) => {
+  const userId = req.session.user.id; // Извлекаем userId из сессии
+
+  if (!userId) {
+    return res.status(401).json({ error: "Не авторизован" });
+  }
+
+  // Запрос к базе данных для получения ID организации
+  const query = `
+      SELECT orgid FROM userOnOrg WHERE uid = ? LIMIT 1
+    `;
+
+  db.get(query, [userId], (err, results) => {
+    console.log(results);
+    console.log(userId);
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Ошибка при получении организации" });
+    }
+
+    if (!results) {
+      return res.status(404).json({ error: "Организация не найдена" });
+    }
+
+    // Возвращаем ID организации
+    res.json({ organizationId: results.orgid });
   });
 });
 
