@@ -145,12 +145,12 @@ app.get('/api/user', (req, res) => {
 
     // Запрашиваем информацию о пользователе из базы данных (например, имя и контактные данные)
     const query = 'SELECT * FROM users WHERE id = ?';
-    
+
     db.get(query, [user.id], (err, row) => {
         if (err) {
             return res.status(500).json({ error: 'Error fetching user information' });
         }
-        
+
         if (!row) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -165,6 +165,32 @@ app.get('/api/user', (req, res) => {
         });
     });
 });
+
+// Маршрут для получения всех мероприятий, на которые записан пользователь
+app.get('/api/user/events', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const userId = req.session.user.id;
+
+    // SQL-запрос для получения всех мероприятий, на которые записан пользователь
+    const query = `
+        SELECT events.*
+        FROM events
+        JOIN userOnEvent ON events.id = userOnEvent.eid
+        WHERE userOnEvent.uid = ?`;
+
+    db.all(query, [userId], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        // Если мероприятия найдены, возвращаем их в формате JSON
+        res.json({ events: rows });
+    });
+});
+
 
 
 // Маршрут для получения всех организаций
