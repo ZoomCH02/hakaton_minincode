@@ -482,6 +482,21 @@ app.post("/api/news", (req, res) => {
       return res.status(500).json({ error: "Failed to add news" });
     }
 
+    // Отправляем сообщение в Telegram
+    fetch("http://localhost:3001/send-message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: title,
+        description: content,
+        org: organization_id
+      }),
+    })
+      .then(() => console.log("Telegram notification sent"))
+      .catch((error) =>
+        console.error("Failed to send Telegram notification:", error)
+      );
+
     res
       .status(201)
       .json({ message: "News added successfully", newsId: this.lastID });
@@ -505,6 +520,21 @@ app.post("/api/events_c", (req, res) => {
         console.error("Error adding circle:", err.message);
         return res.status(500).json({ error: "Failed to add circle" });
       }
+
+      // Отправляем сообщение в Telegram
+      fetch("http://localhost:3001/send-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: title,
+          description: description,
+          org: organization_id,
+        }),
+      })
+        .then(() => console.log("Telegram notification sent"))
+        .catch((error) =>
+          console.error("Failed to send Telegram notification:", error)
+        );
 
       res
         .status(201)
@@ -538,6 +568,21 @@ app.post("/api/events_e", (req, res) => {
         console.error("Error adding event:", err.message);
         return res.status(500).json({ error: "Failed to add event" });
       }
+
+      // Отправляем сообщение в Telegram
+      fetch("http://localhost:3001/send-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: title,
+          description: description,
+          org: organization_id,
+        }),
+      })
+        .then(() => console.log("Telegram notification sent"))
+        .catch((error) =>
+          console.error("Failed to send Telegram notification:", error)
+        );
 
       res
         .status(201)
