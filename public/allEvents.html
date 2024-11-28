@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Index - iLanding Bootstrap Template</title>
+    <title>Вход</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
 
@@ -42,69 +42,55 @@
 
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a href="./index.html#hero">Главная</a></li>
-                    <li><a href="./index.html#about">О нас</a></li>
-                    <li><a href="./index.html#features">Карта организаций</a></li>
-                    <li><a href="./index.html#services">Ближайшие мероприятия</a></li>
-                    <li><a href="./index.html#contact">Контакты</a></li>
+                    <li><a href="#hero" class="active">Главная</a></li>
+                    <li><a href="#about">О нас</a></li>
+                    <li><a href="#features">Карта организаций</a></li>
+                    <li><a href="#services">Ближайшие мероприятия</a></li>
+                    <li><a href="#contact">Контакты</a></li>
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
 
-            <a class="btn-getstarted" href="./login.html"><b>Войти</b></a>
+            <a id="logOrProfBut" class="btn-getstarted" href="./login.html"><b></b></a>
 
         </div>
     </header>
 
     <main class="main">
-        <!-- Contact Section -->
-        <section id="" class="contact section light-background">
-            <div class="container d-flex align-items-center justify-content-center min-vh-100">
-                <div class="row justify-content-center w-100">
-                    <div class="col-lg-7">
-                        <div class="contact-form" data-aos="fade-up" data-aos-delay="300">
-                            <h3>Вход в аккаунт</h3>
-                            <div class="row gy-4">
-                                <div class="col-md-12">
-                                    <input type="text" id="login" name="name" class="form-control" placeholder="Логин" required="">
-                                </div>
-                                <div class="col-12">
-                                    <input type="password" id="password" class="form-control" name="subject" placeholder="Пароль" required="">
-                                </div>
-                                <div class="col-12 text-center">
-                                    <div class="error-message"></div>
-                                    <button type="button" onclick="login()" class="btn">Войти</button>
-                                </div>
-                            </div>
-                            <!-- Кнопка "Создать аккаунт", центрированная внутри -->
-                            <div class="col-12 text-center mt-3">
-                                <a href="./reg.html" class="btn">Создать аккаунт</a>
-                            </div>
-                        </div>
-                    </div>
+        <section id="" class="services section light-background">
+            <!-- Section Title -->
+            <div class="container section-title" data-aos="fade-up">
+                <h2></h2>
+            </div><!-- End Section Title -->
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="row g-4" id="eventsList">
+
                 </div>
             </div>
-        </section><!-- /Contact Section -->
+        </section><!-- /Services Section -->
     </main>
 
     <footer id="footer" class="footer">
-        <!-- Footer content here -->
+
     </footer>
 
     <!-- Scroll Top -->
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
     <script src="assets/vendor/aos/aos.js"></script>
     <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
 
     <!-- Main JS File -->
-    <script src="assets/js/logreg.js"></script>
-    <script src="assets/js/clearActiveNav.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/checker.js"></script>
+    <script src="assets/js/allEvents.js"></script>
 
 </body>
 

@@ -191,42 +191,171 @@ app.get('/api/user/events', (req, res) => {
     });
 });
 
-
-
-// Маршрут для получения всех организаций
-app.get('/api/organizations', (req, res) => {
-    // SQL-запрос для получения всех организаций
-    const query = 'SELECT * FROM organizations';
+// Маршрут для получения последних двух мероприятий
+app.get('/api/latest-events', (req, res) => {
+    // SQL-запрос для получения двух ближайших мероприятий, которые еще не произошли
+    const query = `
+        SELECT * FROM events
+        WHERE event_date >= CURRENT_TIMESTAMP
+        ORDER BY event_date ASC
+        LIMIT 2
+    `;
 
     db.all(query, [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
 
-        // Если организации найдены, возвращаем их в формате JSON
-        res.json({ organizations: rows });
+        // Если мероприятия найдены, возвращаем их в формате JSON
+        if (rows.length > 0) {
+            res.json({ events: rows });
+        } else {
+            res.json({ message: 'Нет ближайших мероприятий.' });
+        }
     });
 });
 
-// Маршрут для получения организации по ID
+// Маршрут для получения мероприятия по ID
+app.get('/api/events', (req, res) => {
+    // Здесь ваш запрос к базе данных для получения информации о мероприятии
+    const query = `
+    SELECT * FROM events`;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        // Если мероприятия найдены, возвращаем их в формате JSON
+        if (rows.length > 0) {
+            res.json({ events: rows });
+        } else {
+            res.json({ message: 'Нет ближайших мероприятий.' });
+        }
+    });
+});
+
+// Маршрут для получения мероприятия по ID
+app.get('/api/events/:id', (req, res) => {
+    const eventId = req.params.id; // Получаем ID мероприятия из URL
+
+    // Здесь ваш запрос к базе данных для получения информации о мероприятии
+    const query = `
+    SELECT *    
+    FROM events
+    JOIN organizations o ON o.id = events.organization_id
+    WHERE events.id = ?;`;
+
+    db.get(query, [eventId], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (!row) {
+            return res.status(404).json({ message: 'Event not found' });
+        }
+        res.json(row); // Отправляем данные мероприятия
+    });
+});
+
+// Маршрут для регистрации пользователя на мероприятие
+app.post('/api/events/:eventId/register', (req, res) => {
+    // Получаем userId из сессии (предполагается, что userId сохранен в сессии при логине)
+    const userId = req.session.user ? req.session.user.id : null;
+    const { eventId } = req.params; // Получаем eventId из параметра маршрута
+
+    if (!userId) {
+        return res.status(401).json({ message: 'auth plz' });
+    }
+
+    // Сначала проверяем, есть ли уже запись о данном пользователе на мероприятии
+    const checkQuery = `SELECT * FROM userOnEvent WHERE uid = ? AND eid = ?`;
+
+    db.get(checkQuery, [userId, eventId], (err, row) => {
+        if (err) {
+            console.error('Ошибка при проверке записи пользователя на мероприятие:', err);
+            return res.status(500).json({ error: 'Ошибка при проверке записи' });
+        }
+
+        // Если запись уже существует, возвращаем ошибку с кодом 400
+        if (row) {
+            return res.status(400).json({ message: 'Вы уже записаны на это мероприятие' });
+        }
+
+        // Запрос для вставки записи в таблицу userOnEvent, если пользователя еще нет
+        const query = `INSERT INTO userOnEvent (uid, eid) VALUES (?, ?)`;
+
+        db.run(query, [userId, eventId], function (err) {
+            if (err) {
+                console.error('Ошибка при добавлении пользователя на мероприятие:', err);
+                return res.status(500).json({ error: 'Ошибка при записи на мероприятие' });
+            }
+
+            // Возвращаем успешный ответ
+            res.status(200).json({ message: 'Пользователь успешно записан на мероприятие' });
+        });
+    });
+});
+
+
+
+// Маршрут для получения организации по ID, её новостей и мероприятий
 app.get('/api/organizations/:id', (req, res) => {
     const { id } = req.params;  // Получаем ID из параметров URL
 
     // SQL-запрос для получения организации по ID
-    const query = 'SELECT * FROM organizations WHERE id = ?';
-
-    db.get(query, [id], (err, row) => {
+    const organizationQuery = 'SELECT * FROM organizations WHERE id = ?';
+    db.get(organizationQuery, [id], (err, organizationRow) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
 
         // Если организация не найдена
-        if (!row) {
-            return res.status(404).json({ message: 'Organization not found22' });
+        if (!organizationRow) {
+            return res.status(404).json({ message: 'Organization not found' });
         }
 
-        // Возвращаем организацию в формате JSON
-        res.json({ organization: row });
+        // Запрашиваем новости организации
+        const newsQuery = 'SELECT * FROM news WHERE organization_id = ?';
+        db.all(newsQuery, [id], (err, newsRows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            // Запрашиваем мероприятия организации
+            const eventsQuery = 'SELECT * FROM events WHERE organization_id = ?';
+            db.all(eventsQuery, [id], (err, eventsRows) => {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+
+                // Возвращаем организацию, её новости и мероприятия в формате JSON
+                res.json({
+                    organization: organizationRow,
+                    news: newsRows,
+                    events: eventsRows
+                });
+            });
+        });
+    });
+});
+
+
+// Маршрут для получения организации по ID
+app.get('/api/organizations', (req, res) => {
+    const query = 'SELECT * FROM organizations';
+
+    db.all(query, (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        // Если организации не найдены
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'No organizations found' });
+        }
+
+        // Возвращаем все организации в формате JSON
+        res.json({ organizations: rows });
     });
 });
 

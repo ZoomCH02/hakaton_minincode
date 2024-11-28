@@ -54,21 +54,21 @@ async function fetchUserEvents() {
                 // Отображаем все мероприятия
                 console.log(result.events);
                 result.events.forEach(event => {
-                    const eventElement = document.createElement('div');
-                    eventElement.classList.add('row'); // Добавляем класс 'row'
-                    eventElement.classList.add('gy-4'); // Добавляем класс 'gy-4'
-
                     // Форматируем дату
                     const formattedDate = formatDate(event.event_date);
 
-                    eventElement.innerHTML = `
-                        <h3><b>${event.title}</b></h3>
-                        <h4><b>Описание:</b> ${event.description}</h4>
-                        <h4><b>Организатор:</b> ${event.organizer || "Не указано"}</h4>
-                        <h4><b>Дата:</b> ${formattedDate}</h4>
-                        <h4><b>Место:</b> ${event.location}</h4>
+                    eventsContainer.innerHTML += `
+                        <div class="contact-form" data-aos="fade-up" data-aos-delay="300"
+                            style="height: 450px; margin-bottom: 20px;">
+                            <div class="row gy-4">
+                                <h3><b>${event.title}</b></h3>
+                                <h4><b>Описание:</b> ${event.description}</h4>
+                                <h4><b>Организатор:</b> ${event.organizer || "Не указано"}</h4>
+                                <h4><b>Дата:</b> ${formattedDate}</h4>
+                                <h4><b>Место:</b> ${event.location}</h4>
+                            </div>
+                        </div>
                     `;
-                    eventsContainer.appendChild(eventElement);
                 });
             } else {
                 eventsContainer.innerHTML = '<p>Вы не записаны на мероприятия.</p>';
