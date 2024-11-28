@@ -63,18 +63,22 @@
                 <h2></h2>
             </div><!-- End Section Title -->
 
-            <!-- Форма для фильтрации -->
-            <div class="filters  justify-content-between mb-4">
-                <!-- Поиск по названию -->
-                <input type="text" id="searchInput" class="form-control" placeholder="Поиск по названию..." />
-                <!-- Фильтр по организации -->
-                <select id="organizationFilter" class="form-control">
-                    <option value="">Все организации</option>
-                    <!-- Опции для организаций будут добавляться динамически -->
-                </select>
-            </div>
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
+            <div class="container" data-aos="fade-up" data-aos-delay="20">
+                <!-- Форма для фильтрации -->
+                <div class="filters">
+                    <!-- Поиск по названию -->
+                    <input type="text" id="searchInput" class="form-control" placeholder="Поиск по названию..." />
+                    <!-- Фильтр по организации -->
+                    <select style="margin-left: 20px;" id="organizationFilter" class="form-control">
+                        <option value="">Все организации</option>
+                        <!-- Опции для организаций будут добавляться динамически -->
+                    </select>
+                    <!-- Фильтр по типу мероприятия -->
+                    <select style="margin-left: 20px;" id="typeFilter" class="form-control">
+                        <option value="1">Мероприятия</option>
+                        <option value="0">Кружки</option>
+                    </select>
+                </div>
                 <div class="row g-4" id="eventsList">
 
                 </div>

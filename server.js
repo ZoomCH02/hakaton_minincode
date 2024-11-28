@@ -216,7 +216,7 @@ app.get('/api/latest-events', (req, res) => {
 });
 
 app.get('/api/events', (req, res) => {
-    let { search, organization_id } = req.query;
+    let { search, organization_id, isEvent } = req.query;
     let query = 'SELECT * FROM events WHERE 1=1';
     const params = [];
 
@@ -230,6 +230,12 @@ app.get('/api/events', (req, res) => {
     if (organization_id) {
         query += ' AND organization_id = ?';
         params.push(organization_id);
+    }
+
+    // Фильтрация по типу мероприятия
+    if (isEvent !== undefined) {
+        query += ' AND isEvent = ?';
+        params.push(isEvent);
     }
 
     query += ' ORDER BY event_date ASC'; // Сортируем по дате мероприятия
@@ -251,7 +257,6 @@ app.get('/api/events', (req, res) => {
 });
 
 
-
 // Маршрут для получения мероприятия по ID
 app.get('/api/events/:id', (req, res) => {
     const eventId = req.params.id; // Получаем ID мероприятия из URL
@@ -261,7 +266,7 @@ app.get('/api/events/:id', (req, res) => {
     SELECT *    
     FROM events
     JOIN organizations o ON o.id = events.organization_id
-    WHERE events.id = ?;`;
+    WHERE events.id = ? AND isEvent=1;`;
 
     db.get(query, [eventId], (err, row) => {
         if (err) {

@@ -22,12 +22,13 @@ async function loadOrganizations() {
 
 // Функция для загрузки мероприятий с учетом фильтров
 async function loadLatestEvents() {
-    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    const searchQuery = document.getElementById('searchInput').value;
     const selectedOrg = document.getElementById('organizationFilter').value;
+    const selectedType = document.getElementById('typeFilter').value;
 
     try {
-        // Отправляем запрос с параметрами поиска и фильтра по организации
-        const response = await fetch(`/api/events?search=${searchQuery}&organization_id=${selectedOrg}`);
+        // Отправляем запрос с параметрами поиска, фильтра по организации и типу мероприятия
+        const response = await fetch(`/api/events?search=${searchQuery}&organization_id=${selectedOrg}&isEvent=${selectedType}`);
         const result = await response.json();
 
         if (response.ok) {
@@ -39,7 +40,7 @@ async function loadLatestEvents() {
                 const eventElement = document.createElement('div');
                 eventElement.classList.add('col-lg-6');
                 eventElement.setAttribute('data-aos', 'fade-up');
-                eventElement.setAttribute('data-aos-delay', '100'); // или настраиваем задержку индивидуально
+                eventElement.setAttribute('data-aos-delay', '29'); // или настраиваем задержку индивидуально
 
                 eventElement.innerHTML = `
                     <div class="service-card d-flex">
@@ -77,4 +78,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Добавляем обработчики событий для фильтров
     document.getElementById('searchInput').addEventListener('input', handleFilterChange);
     document.getElementById('organizationFilter').addEventListener('change', handleFilterChange);
+    document.getElementById('typeFilter').addEventListener('change', handleFilterChange);
 });
