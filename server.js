@@ -489,7 +489,7 @@ app.post("/api/news", (req, res) => {
       body: JSON.stringify({
         name: title,
         description: content,
-        org: organization_id
+        org: organization_id,
       }),
     })
       .then(() => console.log("Telegram notification sent"))
