@@ -25,6 +25,7 @@ function checkUserLogin() {
 
 // Функция для получения информации о пользователе и отображения данных на странице
 function loadUserProfile(data) {
+  console.log(data);
   // Если запрос успешен, отображаем данные о пользователе
   document.getElementById("login").innerText = `Логин: ${data.login}`;
   document.getElementById("name").innerText = `Имя: ${data.name}`;
@@ -57,6 +58,10 @@ function loadOrganizationData(organizationId) {
   fetch(`/api/organizations/${organizationId}`)
     .then((response) => response.json())
     .then((data) => {
+      document.getElementById(
+        "orglabel"
+      ).innerText = `Организация: ${data.organization.name}`;
+
       // Заполнение новостей
       const newsContainer = document.getElementById("news");
       data.news.forEach((news) => {
