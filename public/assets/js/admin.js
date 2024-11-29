@@ -1,4 +1,24 @@
-function logout() { }
+// Функция для выхода из аккаунта
+function logout() {
+  fetch("/api/logout", {
+    method: "POST",
+    credentials: "same-origin", // Обеспечивает отправку cookies с запросом
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === "Выход успешен") {
+        alert("Вы успешно вышли из системы!");
+        window.location.href = "/login.html"; // Перенаправляем на страницу входа
+      } else {
+        alert("Ошибка при выходе: " + data.message);
+      }
+    })
+    .catch(error => {
+      console.error("Ошибка при запросе на сервер:", error);
+      alert("Ошибка при выходе из системы");
+    });
+}
+
 
 function get(url, cb) {
   fetch(url, {
@@ -9,8 +29,8 @@ function get(url, cb) {
     .then((data) => {
       // Если запрос успешен, отображаем данные о пользователе
       if (data) {
-        if(data.message){
-          if(data.message = "auth plz"){
+        if (data.message) {
+          if (data.message = "auth plz") {
             window.location.replace("/login.html")
           }
         }
@@ -105,11 +125,11 @@ function renderStat() {
         scales: {
           yAxes: [{
             ticks: {
-                beginAtZero: false,
-                max: 8,
-                min: 0
+              beginAtZero: false,
+              max: 8,
+              min: 0
             }
-        }]
+          }]
         },
         title: {
           display: true,
@@ -132,11 +152,11 @@ function renderStat() {
         scales: {
           yAxes: [{
             ticks: {
-                beginAtZero: false,
-                max: 8,
-                min: 0
+              beginAtZero: false,
+              max: 8,
+              min: 0
             }
-        }]
+          }]
         },
         title: {
           display: true,

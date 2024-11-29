@@ -52,24 +52,25 @@ mymap.on('click', function (evt) {
 });
 
 function sendBid() {
-    var inpLat = document.getElementById("lat")
-    var inpLon = document.getElementById("lon")
-    var name = document.getElementById('name')
-    var categorNew = document.getElementById("categorNew")
-    var subject = document.getElementById('subject')
-    var neworgImg = document.getElementById('neworgImg')
+    var inpLat = document.getElementById("lat");
+    var inpLon = document.getElementById("lon");
+    var name = document.getElementById('name');
+    var categorNew = document.getElementById("categorNew");
+    var subject = document.getElementById('subject');
+    var neworgImg = document.getElementById('neworgImg');
+
     if (!inpLat.value || !inpLon.value || !name.value || !categorNew.value || !subject.value || !neworgImg.value) {
-        return alert("Заполните все поля")
+        return alert("Заполните все поля");
     }
 
-    data = {
+    var data = {
         name: name.value,
         description: subject.value,
         category: categorNew.value,
         latetude: inpLat.value,
         longetude: inpLon.value,
         img: neworgImg.value
-    }
+    };
 
     fetch("/api/admin/createOrg", {
         method: "POST",
@@ -81,19 +82,24 @@ function sendBid() {
     })
         .then((response) => response.json())
         .then((data) => {
-            // Если запрос успешен, отображаем данные о пользователе
+            // Проверяем, что ответ от сервера имеет статус "OK"
             if (data) {
-                if (data.status == "OK")
-                    alert("Запрос успешно добавлен и ожидает модерации")
-                else {
-                    alert("Ошибка данных или сервера")
+                if (data.status === "OK") {
+                    alert("Запрос успешно добавлен и ожидает модерации");
+                } else if (data.message === "У вас уже есть привязанная организация") {
+                    alert("Ошибка: У вас уже есть привязанная организация");
+                } else if (data.message === "auth plz") {
+                    alert("Ошибка: Войдите в аккаунт");
+                } else {
+                    alert("Ошибка данных или сервера");
                 }
             } else {
-                console.warn("free response")
+                console.warn("Неизвестный ответ от сервера");
             }
         })
         .catch((error) => {
             console.error("Ошибка загрузки данных пользователя:", error);
             // Можно добавить отображение ошибки на странице
+            alert("Ошибка соединения с сервером");
         });
 }

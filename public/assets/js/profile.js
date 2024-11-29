@@ -12,20 +12,26 @@ async function fetchUserProfile() {
     const result = await response.json();
 
     if (response.ok) {
-      // Отображаем информацию о пользователе
-      document.getElementById("login").innerText = `Логин: ${result.login}`;
-      document.getElementById("name").innerText = `Имя: ${result.name}`;
-      document.getElementById("role").innerText = `Роль: ${result.role}`;
-      document.getElementById(
-        "contact-info"
-      ).innerText = `Контактная информация: ${result.contact_info}`;
+      if (result.role == "organization") {
+        window.location.href = "/profileOrg.html";
+      }
+      else {
+        // Отображаем информацию о пользователе
+        document.getElementById("login").innerText = `Логин: ${result.login}`;
+        document.getElementById("name").innerText = `Имя: ${result.name}`;
+        document.getElementById("role").innerText = `Роль: ${result.role}`;
+        document.getElementById(
+          "contact-info"
+        ).innerText = `Контактная информация: ${result.contact_info}`;
 
-      // Получаем мероприятия, на которые записан пользователь
-      await fetchUserEvents();
+        // Получаем мероприятия, на которые записан пользователь
+        await fetchUserEvents();
+      }
     } else if (response.status === 401) {
       // Если ошибка 401 (неавторизованный), перенаправляем на страницу login.html
       window.location.href = "/login.html";
-    } else {
+    }
+    else {
       // Ошибка, если не удалось получить данные
       errorMessage.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
     }
@@ -67,9 +73,8 @@ async function fetchUserEvents() {
                             <div class="row gy-4">
                                 <h3><b>${event.title}</b></h3>
                                 <h4><b>Описание:</b> ${event.description}</h4>
-                                <h4><b>Организатор:</b> ${
-                                  event.organizer || "Не указано"
-                                }</h4>
+                                <h4><b>Организатор:</b> ${event.organizer || "Не указано"
+              }</h4>
                                 <h4><b>Дата:</b> ${formattedDate}</h4>
                                 <h4><b>Место:</b> ${event.location}</h4>
                             </div>
@@ -82,9 +87,8 @@ async function fetchUserEvents() {
                             <div class="row gy-4">
                                 <h3><b>${event.title}</b></h3>
                                 <h4><b>Описание:</b> ${event.description}</h4>
-                                <h4><b>Организатор:</b> ${
-                                  event.name || "Не указано"
-                                }</h4>
+                                <h4><b>Организатор:</b> ${event.name || "Не указано"
+              }</h4>
                                 <h4><b>Расписание:</b> ${event.event_date}</h4>
                                 <h4><b>Место:</b> ${event.address}</h4>
                             </div>

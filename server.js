@@ -38,6 +38,26 @@ const db = new sqlite3.Database("./db.db", (err) => {
   }
 });
 
+// Маршрут для выхода из аккаунта
+app.post("/api/logout", (req, res) => {
+  if (req.session.user) {
+    // Уничтожаем сессию
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Ошибка при выходе из системы" });
+      }
+
+      // Удаляем cookie сессии
+      res.clearCookie("connect.sid");
+
+      res.json({ message: "Выход успешен" });
+    });
+  } else {
+    res.status(400).json({ message: "Пользователь не авторизован" });
+  }
+});
+
+
 // Маршрут для регистрации
 app.post("/api/register", async (req, res) => {
   const { login, fio, password, password_repeat } = req.body;
@@ -720,29 +740,41 @@ app.post("/api/admin/createOrg", (req, res) => {
     return res.status(401).json({ message: "auth plz" });
   }
 
-  var d = req.body;
-  d.name, d.description, d.category, d.latetude, d.longetude, d.img;
-  db.run(
-    "INSERT INTO organizations (name,description,category,latetude,longetude,img,verified) VALUES (?,?,?,?,?,?,0)",
-    [d.name, d.description, d.category, d.latetude, d.longetude, d.img],
-    function (err) {
+  // Получаем данные из тела запроса
+  const { name, description, category, latetude, longetude, img } = req.body;
+
+  // Проверка, есть ли уже организация у пользователя
+  const checkUserOrgQuery = "SELECT * FROM userOnOrg WHERE uid = ?";
+  db.get(checkUserOrgQuery, [req.session.user.id], (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (row) {
+      // Если запись найдена, значит у пользователя уже есть организация
+      return res.status(400).json({ message: "У вас уже есть привязанная организация" });
+    }
+
+    // Если организация не найдена, создаем новую организацию
+    const insertOrgQuery = "INSERT INTO organizations (name, description, category, latetude, longetude, img, verified) VALUES (?, ?, ?, ?, ?, ?, 0)";
+    db.run(insertOrgQuery, [name, description, category, latetude, longetude, img], function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
-      db.run(
-        "INSERT INTO userOnOrg (uid,orgid) VALUES (?,?)",
-        [req.session.user.id, this.lastID],
-        function (err) {
-          if (err) {
-            return res.status(500).json({ error: err.message });
-          } else {
-            res.send({ status: "OK" });
-          }
+
+      // Привязываем пользователя к только что созданной организации
+      const insertUserOrgQuery = "INSERT INTO userOnOrg (uid, orgid) VALUES (?, ?)";
+      db.run(insertUserOrgQuery, [req.session.user.id, this.lastID], function (err) {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        } else {
+          return res.json({ status: "OK" });
         }
-      );
-    }
-  );
+      });
+    });
+  });
 });
+
 
 app.get("/api/admin/getOrgForModeration", (req, res) => {
   if (!req.session.user) {

@@ -7,10 +7,15 @@ async function loadOrganizations() {
         if (response.ok) {
             const orgSelect = document.getElementById('organizationFilter');
             result.organizations.forEach(org => {
-                const option = document.createElement('option');
-                option.value = org.id;
-                option.textContent = org.name;
-                orgSelect.appendChild(option);
+                if (org.verified == 1) {
+                    const option = document.createElement('option');
+                    option.value = org.id;
+                    option.textContent = org.name;
+                    orgSelect.appendChild(option);
+                }
+                else {
+                    console.log(org.nanme + "не подтверждена")
+                }
             });
         } else {
             console.error('Ошибка при получении организаций:', result.message);
